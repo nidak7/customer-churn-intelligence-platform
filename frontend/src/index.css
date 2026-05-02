@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #f8fafc;
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 26%),
+    radial-gradient(circle at 82% 10%, rgba(163, 230, 53, 0.11), transparent 18%),
+    radial-gradient(circle at 68% 72%, rgba(251, 113, 133, 0.08), transparent 22%),
+    linear-gradient(180deg, #080b12 0%, #0a101b 52%, #080b12 100%);
+  font-family: "Aptos", "Segoe UI Variable Text", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: #f8fafc;
+  background: transparent;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(38, 50, 68, 0.26) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(38, 50, 68, 0.26) 1px, transparent 1px);
+  background-size: 96px 96px;
+  mask-image: linear-gradient(180deg, rgba(255, 255, 255, 0.78), transparent 82%);
+  pointer-events: none;
+}
+
+.recharts-cartesian-grid line {
+  stroke: rgba(38, 50, 68, 0.7);
+}
+
+.recharts-text {
+  fill: #94a3b8;
+  font-size: 12px;
+}
+
+.bg-app {
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.08), transparent 22%),
+    radial-gradient(circle at 100% 6%, rgba(163, 230, 53, 0.08), transparent 16%),
+    radial-gradient(circle at 80% 75%, rgba(251, 113, 133, 0.06), transparent 22%),
+    linear-gradient(180deg, rgba(8, 11, 18, 0.98), rgba(8, 11, 18, 0.98));
+}
+
+.bg-surface {
+  background:
+    linear-gradient(180deg, rgba(17, 24, 39, 0.92), rgba(17, 24, 39, 0.84));
+}
+
+.bg-surface-strong {
+  background:
+    linear-gradient(180deg, rgba(23, 32, 51, 0.92), rgba(17, 24, 39, 0.94));
+}
+
+.shadow-panel {
+  box-shadow:
+    0 0 0 1px rgba(38, 50, 68, 0.42),
+    0 24px 56px rgba(0, 0, 0, 0.34);
+}
+
+.shadow-signal {
+  box-shadow:
+    0 0 0 1px rgba(163, 230, 53, 0.12),
+    0 16px 34px rgba(163, 230, 53, 0.08);
+}
+
+.glass-border {
+  border: 1px solid rgba(38, 50, 68, 0.75);
+}
+
+.panel-hover {
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.panel-hover:hover {
+  transform: translateY(-2px);
+  border-color: rgba(163, 230, 53, 0.32);
+  box-shadow:
+    0 0 0 1px rgba(163, 230, 53, 0.12),
+    0 24px 54px rgba(0, 0, 0, 0.34);
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(163, 230, 53, 0.24);
+  border-radius: 999px;
+}
