@@ -12,4 +12,4 @@ Three report pages built on `churn_customers_powerbi.csv` (7,043 customers with 
 2. In `Churn.SemanticModel/definition/expressions.tmdl`, set `DataFile` to the full path of `churn_customers_powerbi.csv` on your machine.
 3. Click **Refresh**.
 
-`BUILD_GUIDE.md` explains how every measure and visual was built, and `churn_theme.json` holds the colour theme.
+`BUILD_GUIDE.md` has notes on how the measures and visuals were built, and `churn_theme.json` holds the colour theme.

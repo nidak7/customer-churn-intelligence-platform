@@ -1,6 +1,6 @@
-# Power BI build guide: Customer Churn
+# How I built the Power BI dashboard
 
-Build the dashboard from `churn_customers_powerbi.csv` (7,043 rows, one per customer, with model risk scores). Every step ends with a number to check.
+Notes on how the dashboard was built from `churn_customers_powerbi.csv` (7,043 rows, one per customer, with the model risk scores). Each step lists a number to check against the notebook.
 
 ## 1. Load and clean (Power Query)
 1. **Home → Get data → Text/CSV** → pick `churn_customers_powerbi.csv` → **Transform Data**.
@@ -63,8 +63,3 @@ Checks: High Risk Segment Churn **71.2%** (631 customers). With `RiskBand = High
 
 ## 8. Finish
 Add page names, align visuals with **Format → Align**, turn on **View → Gridlines → Snap to grid**. Save the file, and export a screenshot of each page for the README.
-
-## Talking points for interviews
-- Churn is 26.5% and is concentrated: month-to-month contracts and the first 12 months.
-- The riskiest 30% of customers contain 66.4% of churners, so outreach can be targeted.
-- I validated the model on unseen customers only, and I chose recall over accuracy because missing a leaver costs more than an extra call.
