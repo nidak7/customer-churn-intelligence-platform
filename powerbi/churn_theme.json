@@ -1,0 +1,27 @@
+{
+  "name": "Churn Soft Slate",
+  "dataColors": ["#6F8FAE", "#A9BDD0", "#8FB0A2", "#D9917F", "#E0C492", "#3F566E", "#C9D3DC", "#B7A5C2"],
+  "background": "#FFFFFF",
+  "foreground": "#2C3640",
+  "tableAccent": "#6F8FAE",
+  "good": "#8FB0A2",
+  "neutral": "#E0C492",
+  "bad": "#D9917F",
+  "textClasses": {
+    "title": { "fontFace": "Segoe UI Semibold", "fontSize": 13, "color": "#2C3640" },
+    "label": { "fontFace": "Segoe UI", "fontSize": 11, "color": "#76828E" },
+    "callout": { "fontFace": "Segoe UI Semibold", "fontSize": 28, "color": "#3F566E" }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [{ "color": { "solid": { "color": "#FFFFFF" } }, "transparency": 0 }],
+        "border": [{ "show": true, "color": { "solid": { "color": "#E3E7EB" } }, "radius": 6 }],
+        "title": [{ "show": true, "fontColor": { "solid": { "color": "#2C3640" } }, "fontSize": 12 }]
+      }
+    },
+    "page": {
+      "*": { "background": [{ "color": { "solid": { "color": "#F1F3F5" } }, "transparency": 0 }] }
+    }
+  }
+}

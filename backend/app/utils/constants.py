@@ -126,3 +126,7 @@ NORMALIZED_VALUE_MAPS = {
         "credit card (automatic)": "Credit card (automatic)",
     },
 }
+
+# Risk bands: Low < 0.30 <= Medium < 0.60 <= High
+MEDIUM_RISK_THRESHOLD = 0.30
+HIGH_RISK_THRESHOLD = 0.60

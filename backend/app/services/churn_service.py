@@ -11,7 +11,7 @@ from scipy import sparse
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score
+from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score, roc_auc_score
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
@@ -24,6 +24,8 @@ from app.utils.constants import (
     CHARGE_RANGE_LABELS,
     CONTRACT_ORDER,
     FEATURE_COLUMNS,
+    HIGH_RISK_THRESHOLD,
+    MEDIUM_RISK_THRESHOLD,
     INTERNET_SERVICE_ORDER,
     NORMALIZED_VALUE_MAPS,
     NUMERIC_COLUMNS,
@@ -43,7 +45,7 @@ class ChurnService:
     def __init__(self):
         project_root = Path(__file__).resolve().parents[3]
         database_path = project_root / "backend" / "app" / "customer_churn.db"
-        self.sample_path = project_root / "data" / "sample_customer_churn.csv"
+        self.sample_path = project_root / "data" / "telco_customer_churn.csv"
         self.repository = DatasetRepository(database_path)
         self.repository.initialize()
         self.model_bundle: dict | None = None
@@ -402,6 +404,8 @@ class ChurnService:
             "accuracy": self._safe_number(accuracy_score(y_test, predictions), 4),
             "precision": self._safe_number(precision_score(y_test, predictions, zero_division=0), 4),
             "recall": self._safe_number(recall_score(y_test, predictions, zero_division=0), 4),
+            "auc": self._safe_number(roc_auc_score(y_test, probabilities), 4),
+            "top_30_capture": self._top_share_captured(y_test.to_numpy(), probabilities, 0.30),
             "confusion_matrix": confusion_matrix(y_test, predictions).tolist(),
         }
 
@@ -417,11 +421,7 @@ class ChurnService:
             for feature_name, weight in ranked_features[:10]
         ]
 
-        probability_bands = [
-            {"threshold": "Low", "count": int((probabilities < 0.35).sum())},
-            {"threshold": "Medium", "count": int(((probabilities >= 0.35) & (probabilities < 0.65)).sum())},
-            {"threshold": "High", "count": int((probabilities >= 0.65).sum())},
-        ]
+        probability_bands = self._risk_bands(y_test.to_numpy(), probabilities)
 
         self.model_bundle = {
             "pipeline": pipeline,
@@ -444,6 +444,30 @@ class ChurnService:
             "probability_bands": probability_bands,
         }
 
+    @staticmethod
+    def _top_share_captured(actual: np.ndarray, scores: np.ndarray, top_fraction: float) -> float:
+        """Share of all churners found in the top `top_fraction` of customers ranked by risk score."""
+        cutoff = int(round(len(scores) * top_fraction))
+        order = np.argsort(-scores, kind="stable")[:cutoff]
+        total_churners = actual.sum()
+        return round(float(actual[order].sum() / total_churners), 4) if total_churners else 0.0
+
+    @staticmethod
+    def _risk_bands(actual: np.ndarray, scores: np.ndarray) -> list[dict]:
+        masks = {
+            "Low": scores < MEDIUM_RISK_THRESHOLD,
+            "Medium": (scores >= MEDIUM_RISK_THRESHOLD) & (scores < HIGH_RISK_THRESHOLD),
+            "High": scores >= HIGH_RISK_THRESHOLD,
+        }
+        return [
+            {
+                "threshold": band,
+                "count": int(mask.sum()),
+                "actual_churn_rate": round(float(actual[mask].mean() * 100), 2) if mask.any() else 0.0,
+            }
+            for band, mask in masks.items()
+        ]
+
     def predict_customer(self, customer_payload: dict) -> dict:
         if not self.model_bundle:
             raise ModelNotTrainedError("Model not trained. Train the churn model before running prediction.")
@@ -459,7 +483,7 @@ class ChurnService:
         customer_df = pd.DataFrame([{column: payload[column] for column in FEATURE_COLUMNS}])
         pipeline = self.model_bundle["pipeline"]
         probability = float(pipeline.predict_proba(customer_df)[0][1])
-        risk_level = "High" if probability >= 0.65 else "Medium" if probability >= 0.35 else "Low"
+        risk_level = "High" if probability >= HIGH_RISK_THRESHOLD else "Medium" if probability >= MEDIUM_RISK_THRESHOLD else "Low"
 
         transformed = pipeline.named_steps["preprocessor"].transform(customer_df)
         if sparse.issparse(transformed):

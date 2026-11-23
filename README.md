@@ -1,253 +1,145 @@
-# Customer Churn Intelligence Platform
+# Customer Churn Intelligence
 
-Customer Churn Intelligence Platform is a full-stack churn analytics application designed for Data Analyst, Business Analyst, and entry-level Data Science portfolios. It combines operational KPI tracking, churn segmentation, automated business insights, and a machine learning prediction workflow in a recruiter-ready analytics dashboard.
+**Which telecom customers are likely to leave, why, and who should the retention team contact first?**
 
-## Resume-ready project description
+This project analyzes 7,043 customers from the public IBM Telco Customer Churn dataset. It combines data cleaning, churn analysis, statistical testing, and a Logistic Regression model, and presents the results in a dashboard with downloadable reports.
 
-Built a production-style churn intelligence application using React, Tailwind CSS, Recharts, FastAPI, Pandas, scikit-learn, and SQLite. The platform ingests Telco-style customer churn CSV files, validates and cleans the data, calculates business KPIs, visualizes churn drivers, generates automated retention insights, trains a churn prediction model, and exports professional CSV or PDF reports.
+---
 
-## Features
+## Key findings
 
-- Full Telco Customer Churn sample dataset included out of the box with 7000+ rows
-- CSV upload with strict schema validation and clean user-facing errors
-- Data cleaning pipeline for blank `TotalCharges`, missing values, duplicate `customerID`, numeric conversion, and categorical normalization
-- Global-neutral KPI system with no currency symbols
-- Executive analytics dashboard with compact KPI strip, filter toolbar, charts, insight notes, data health, and prediction lab
-- Chart suite for contract, payment method, internet service, tenure, monthly charges, and churn risk heatmap
-- Insight engine that surfaces top churn segments, key drivers, and business recommendations
-- Logistic Regression churn model with train/test split, realistic metrics, confusion matrix, and top 10 influencing features
-- Prediction lab with churn probability, risk level, and local top factors
-- CSV and PDF export including KPIs, insights, recommendations, model metrics, and top features
-- Graceful empty states and backend-offline handling
+| Question | Answer |
+|---|---|
+| How many customers left? | **1,869 of 7,043 (26.54%)**, about one in four |
+| How much monthly revenue did they take? | **30.5%** of all monthly charges |
+| What mattered most? | **Contract type.** Month-to-month: 42.71% churn. Two-year: 2.83% |
+| When is risk highest? | **The first year.** 47.44% of customers with 0–12 months' tenure left |
+| Which groups stood out? | Fibre optic users (41.89%), electronic check payers (45.29%), senior citizens (41.68%) |
+| Riskiest segment? | New month-to-month fibre customers paying by electronic check: **71.2% churn** (631 customers) |
+| What reduces churn? | Online security and tech support: about **15%** churn with them vs **42%** without |
 
-## Tech stack
+Chi-square tests confirmed that contract, tenure, internet service, payment method, and add-on services are all linked to churn. Gender and phone service are not.
 
-- Frontend: React, Vite, Tailwind CSS, Recharts, Axios
-- Backend: FastAPI, Uvicorn
-- Data and ML: Python, Pandas, NumPy, scikit-learn
-- Database: SQLite
-- Export: CSV and PDF via Pandas and ReportLab
+---
 
-## Folder structure
+## Model results
+
+A Logistic Regression model with balanced class weights was trained on 75% of customers and tested on the remaining **1,761** customers it had never seen.
+
+| Measure | Result | In plain words |
+|---|---|---|
+| Recall | **79.66%** | Caught about 4 in 5 customers who actually left |
+| Precision | 51.88% | About half of flagged customers actually left |
+| Accuracy | 75.01% | Correct for 3 in 4 customers overall |
+| AUC | **0.846** | Ranks churners above non-churners well |
+
+**Risk bands** (probability cut-offs 0.30 and 0.60, checked on the same 1,761 unseen customers):
+
+| Band | Customers | Actually churned |
+|---|---|---|
+| Low | 761 | 4.47% |
+| Medium | 393 | 24.94% |
+| High | 607 | 55.19% |
+
+**Business impact:** the top 30% of customers by predicted risk contained **66.4%** of everyone who left. A retention team could reach two-thirds of likely leavers by contacting fewer than a third of customers.
+
+**Why recall over accuracy?** Missing a customer who is about to leave usually costs more than one extra courtesy call.
+
+---
+
+**Revenue view:** churned customers paid $139,131 a month. Saving 10% of them would keep about **$166,957 a year**.
+
+---
+
+## Repository contents
+
+| Folder | What is inside |
+|---|---|
+| `analysis/churn_analysis.py` | Cleans the data, reproduces every figure above, trains the model and writes the Power BI dataset |
+| `sql/churn_analysis_queries.sql` | 10 queries (GROUP BY, CASE, CTE, window function) with expected results |
+| `powerbi/` | Scored dataset, Power BI theme and a step-by-step build guide |
+| `backend/`, `frontend/` | FastAPI service and React dashboard |
+| `data/telco_customer_churn.csv` | Source data |
+
+**Reproduce the numbers:** `pip install pandas scikit-learn scipy` then `python analysis/churn_analysis.py`
+
+---
+
+## Recommendations
+
+1. **Support new customers early.** Check in at 30, 90, and 180 days.
+2. **Offer suitable contract upgrades** to high-risk month-to-month customers.
+3. **Move electronic-check payers to automatic payment.**
+4. **Bundle online security and tech support,** especially for fibre customers.
+5. **Review fibre pricing and quality.** Fibre churn is higher at every tenure level.
+6. **Score customers monthly** and assign actions by Low, Medium, and High risk.
+
+Test each action on a small group first. These results show association, not proof of cause.
+
+---
+
+## How it works
 
 ```text
-customer-churn-intelligence/
-  backend/
-    main.py
-    requirements.txt
-    app/
-      routes/
-      services/
-      models/
-      utils/
-  frontend/
-    package.json
-    tailwind.config.js
-    src/
-      components/
-      pages/
-      services/
-      utils/
-  data/
-    sample_customer_churn.csv
-    telco_customer_churn_full.csv
-  README.md
+CSV data → cleaning and validation (Pandas) → SQLite storage
+        → KPIs, segment churn rates, and insights
+        → Logistic Regression (scikit-learn) → risk scores
+        → FastAPI endpoints → React dashboard → CSV/PDF reports
 ```
 
-## Backend API endpoints
+**Data cleaning**
+- Converted `TotalCharges` from text to numbers
+- Set 11 blank `TotalCharges` values to 0. They all belonged to new customers who had not been billed yet.
+- Checked for duplicate customer IDs (none found)
 
-- `POST /upload`
-- `GET /summary`
-- `GET /charts`
-- `GET /insights`
-- `POST /train-model`
-- `POST /predict`
-- `GET /export-report`
-- `GET /health`
+**Tech stack**
+- Analysis and ML: Python, Pandas, NumPy, scikit-learn
+- Storage: SQLite
+- API: FastAPI
+- Dashboard: React, Recharts, Tailwind CSS
+- Reports: CSV and PDF (ReportLab)
 
-## Sample dataset
+---
 
-The bundled `data/sample_customer_churn.csv` has been upgraded to the full Telco Customer Churn dataset shape and row volume. The application automatically boots from that file on backend startup, so the dashboard works immediately after setup.
+## Run it locally
 
-Required schema:
+**Backend**
 
-- `customerID`
-- `gender`
-- `SeniorCitizen`
-- `Partner`
-- `Dependents`
-- `tenure`
-- `PhoneService`
-- `MultipleLines`
-- `InternetService`
-- `OnlineSecurity`
-- `OnlineBackup`
-- `DeviceProtection`
-- `TechSupport`
-- `StreamingTV`
-- `StreamingMovies`
-- `Contract`
-- `PaperlessBilling`
-- `PaymentMethod`
-- `MonthlyCharges`
-- `TotalCharges`
-- `Churn`
-
-## Setup
-
-### 1. Install backend dependencies
-
-```powershell
-cd customer-churn-intelligence\backend
+```bash
+cd backend
 python -m venv .venv
-.venv\Scripts\activate
+.venv\Scripts\activate        # macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
-```
-
-### 2. Run the FastAPI backend
-
-```powershell
-cd customer-churn-intelligence\backend
-.venv\Scripts\activate
 uvicorn main:app --reload
 ```
 
-Backend URLs:
+API docs: http://127.0.0.1:8000/docs
 
-- API: [http://127.0.0.1:8000](http://127.0.0.1:8000)
-- Health: [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
-- Docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+**Frontend** (in a second terminal)
 
-### 3. Install frontend dependencies
-
-```powershell
-cd customer-churn-intelligence\frontend
+```bash
+cd frontend
 npm install
-```
-
-### 4. Run the React frontend
-
-```powershell
-cd customer-churn-intelligence\frontend
 npm run dev
 ```
 
-Frontend URL:
+Dashboard: http://127.0.0.1:5173
 
-- Dashboard: [http://127.0.0.1:5173](http://127.0.0.1:5173)
+The full dataset in `data/` loads automatically when the backend starts.
 
-### 5. Optional frontend environment variable
+---
 
-Create `frontend/.env` if you want to pin the local backend URL:
+## Limitations
 
-```env
-VITE_API_BASE_URL=http://127.0.0.1:8000
-```
+- Public data and a hypothetical company, so results may differ for a real telecom business
+- A single snapshot with no complaint, usage, or satisfaction data
+- Findings show association, not causation
+- Only Logistic Regression was tested. Comparing it with Random Forest is a planned next step.
 
-## How the app works
+---
 
-1. FastAPI starts and loads the bundled full Telco sample dataset into SQLite.
-2. The frontend checks backend health, then loads summary KPIs, charts, and business insights.
-3. Uploading a new CSV replaces the active dataset after validation and cleaning.
-4. Training the model produces accuracy, precision, recall, confusion matrix, and top feature influence.
-5. The prediction lab scores a customer profile and explains local churn factors.
-6. Export packages the latest business snapshot as CSV or PDF.
+## Dataset
 
-## Testing guide
+IBM Telco Customer Churn (`WA_Fn-UseC_-Telco-Customer-Churn.csv`): 7,043 customers, 21 columns, used for educational purposes.
 
-### Startup and connectivity
-
-1. Start the backend.
-2. Start the frontend.
-3. Confirm the status pill shows `Backend Connected`.
-4. Stop the backend and confirm the UI shows `Backend is offline. Start the FastAPI server and refresh.`
-
-### Dataset and validation
-
-1. Load the app and confirm the full sample dataset appears automatically.
-2. Upload `data/sample_customer_churn.csv` and confirm the upload succeeds.
-3. Confirm data health shows cleaned rows, duplicates removed, blank charges fixed, and missing values filled.
-4. Upload a malformed CSV and confirm the UI shows `Invalid CSV format`.
-5. Upload a CSV missing required columns and confirm the UI shows the missing-column validation message.
-6. Upload a report-export CSV and confirm it is rejected cleanly.
-
-### KPI and chart verification
-
-1. Confirm the dashboard shows total customers, churn rate, average monthly charges, average tenure, and revenue at risk.
-2. Confirm there are no currency symbols in the UI.
-3. Change contract, internet service, payment method, or churn filters.
-4. Confirm KPIs and charts update based on the selected filters.
-5. Confirm all charts have tooltips and empty states when no data is available.
-
-### Machine learning and prediction
-
-1. Click `Train Model`.
-2. Confirm accuracy, precision, recall, confusion matrix, and top 10 features appear.
-3. Confirm the model metrics are realistic and not perfect.
-4. Open `Prediction Lab`.
-5. Enter a customer scenario and click `Run Prediction`.
-6. Confirm churn probability, risk level, and top 3 factors appear.
-
-### Export
-
-1. Click `Export CSV`.
-2. Confirm the report includes KPIs, insights, recommendations, model metrics, and top features.
-3. Click `Export PDF`.
-4. Confirm the PDF downloads and contains a readable professional summary.
-
-### Responsiveness and UI quality
-
-1. Check the dashboard at 1366px laptop width.
-2. Check tablet width.
-3. Check mobile width.
-4. Confirm filters do not overlap, KPI cards stay aligned, and the prediction form remains usable.
-5. Confirm there are no console errors during normal use.
-
-## Common errors and fixes
-
-### Backend is offline
-
-- Make sure FastAPI is running on `http://127.0.0.1:8000`
-- Refresh the frontend after the server starts
-- If needed, add `VITE_API_BASE_URL=http://127.0.0.1:8000` to `frontend/.env`
-
-### Invalid CSV format
-
-- Confirm the upload is a real Telco churn dataset and not a previously exported report
-- Confirm all required columns are present
-- Confirm the file extension is `.csv`
-
-### Dataset not loaded
-
-- Start the backend first so the bundled sample dataset can bootstrap
-- If the database was left in an invalid state, restart the backend to reload the sample dataset
-
-### Model not trained
-
-- Click `Train Model` before using the prediction lab
-- Re-train after every new dataset upload because the model resets intentionally
-
-### Frontend cannot connect locally
-
-- Confirm backend port `8000` and frontend port `5173`
-- Check `frontend/src/services/api.js` or `frontend/.env`
-- Verify CORS is enabled in `backend/main.py`
-
-## Screenshots
-
-Add screenshots here after local run:
-
-- Dashboard overview
-- Segment filter view
-- Insight and data health panel
-- Model snapshot
-- Prediction lab
-
-## Future improvements
-
-- Add saved analysis sessions and dataset version history
-- Add segment drill-down tables with customer search
-- Add SHAP-based local explanations
-- Add automated frontend and backend test suites
-- Add benchmark comparison across multiple churn datasets
-
+**Author:** Nida Farheen Khan · [LinkedIn](https://www.linkedin.com/in/nida-khan-237715279)
