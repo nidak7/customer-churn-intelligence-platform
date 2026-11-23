@@ -36,9 +36,9 @@ function KPIGrid({ kpis, isLoading }) {
       {Object.entries(KPI_CONFIG).map(([key, config]) => (
         <article
           key={key}
-          className="panel-hover rounded-[20px] glass-border bg-surface-strong/90 px-4 py-4 shadow-panel backdrop-blur"
+          className="rounded-lg glass-border bg-surface px-4 py-4 shadow-panel"
         >
-          <p className="text-[11px] uppercase tracking-[0.24em] text-textSecondary">{config.label}</p>
+          <p className="text-[11px] uppercase tracking-wide text-textSecondary">{config.label}</p>
           <div className="mt-3 flex items-end justify-between gap-3">
             <p className="font-display text-2xl text-textPrimary md:text-[30px]">
               {isLoading ? "--" : config.render(safeKpis[key] ?? 0)}

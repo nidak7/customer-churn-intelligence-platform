@@ -4,20 +4,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        appBg: "#080B12",
-        card: "#111827",
-        elevated: "#172033",
-        line: "#263244",
-        primary: "#A3E635",
-        secondary: "#38BDF8",
-        risk: "#FB7185",
-        warning: "#FBBF24",
-        textPrimary: "#F8FAFC",
-        textSecondary: "#94A3B8"
+        appBg: "#F1F3F5",
+        card: "#FFFFFF",
+        elevated: "#F7F9FB",
+        line: "#E3E7EB",
+        primary: "#3F566E",
+        secondary: "#6F8FAE",
+        risk: "#D9917F",
+        warning: "#E0C492",
+        textPrimary: "#2C3640",
+        textSecondary: "#76828E"
       },
       boxShadow: {
-        panel: "0 0 0 1px rgba(38, 50, 68, 0.45), 0 24px 60px rgba(3, 7, 18, 0.48)",
-        glow: "0 0 0 1px rgba(163, 230, 53, 0.12), 0 18px 42px rgba(3, 7, 18, 0.45)"
+        panel: "0 1px 2px rgba(44, 54, 64, 0.06)",
+        glow: "0 1px 2px rgba(44, 54, 64, 0.06)"
       },
       keyframes: {
         rise: {

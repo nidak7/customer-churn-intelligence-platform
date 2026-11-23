@@ -1,7 +1,7 @@
 function EmptyState({ title, message, compact = false }) {
   return (
     <div
-      className={`flex flex-col items-center justify-center rounded-[18px] border border-dashed border-line bg-[#0d1320] text-center ${
+      className={`flex flex-col items-center justify-center rounded-lg border border-dashed border-line bg-elevated text-center ${
         compact ? "px-4 py-5" : "min-h-[220px] px-6 py-8"
       }`}
     >

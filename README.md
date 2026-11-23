@@ -61,7 +61,7 @@ A Logistic Regression model with balanced class weights was trained on 75% of cu
 | `backend/`, `frontend/` | FastAPI service and React dashboard |
 | `data/telco_customer_churn.csv` | Source data |
 
-**Reproduce the numbers:** `pip install pandas scikit-learn scipy` then `python analysis/churn_analysis.py`
+**Reproduce the numbers:** `pip install -r requirements.txt` then `python analysis/churn_analysis.py`
 
 ---
 

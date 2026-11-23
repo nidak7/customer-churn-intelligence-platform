@@ -1,7 +1,7 @@
 const BADGE_STYLES = {
-  online: "border-primary/30 bg-primary/10 text-primary shadow-signal",
-  offline: "border-risk/35 bg-risk/10 text-rose-100",
-  checking: "border-secondary/30 bg-secondary/10 text-sky-100"
+  online: "border-primary/30 bg-primary/10 text-primary",
+  offline: "border-risk/35 bg-risk/10 text-[#a2553f]",
+  checking: "border-secondary/30 bg-secondary/10 text-primary"
 };
 
 const BADGE_LABELS = {

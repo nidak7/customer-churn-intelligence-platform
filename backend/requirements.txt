@@ -3,5 +3,6 @@ uvicorn[standard]==0.34.0
 pandas==2.2.3
 numpy==2.2.2
 scikit-learn==1.6.1
+scipy>=1.13
 python-multipart==0.0.20
 reportlab==4.2.5

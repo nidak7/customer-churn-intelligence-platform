@@ -17,17 +17,17 @@ function InsightPanel({ summary, insights, charts, isLoading, isEmpty }) {
   const analystNotes = (insights?.insight_cards || []).slice(0, 4);
 
   return (
-    <section className="rounded-[22px] glass-border bg-surface p-4 shadow-panel backdrop-blur">
+    <section className="rounded-lg glass-border bg-surface p-4 shadow-panel">
       <div>
-        <p className="text-[11px] uppercase tracking-[0.26em] text-textSecondary">Business insights</p>
+        <p className="text-[11px] uppercase tracking-wide text-textSecondary">Insights</p>
         <h3 className="mt-2 text-lg font-semibold text-textPrimary">Analyst notes</h3>
       </div>
 
       {isLoading ? (
         <div className="mt-4 space-y-3">
-          <div className="h-24 animate-pulse rounded-[18px] bg-white/[0.04]" />
-          <div className="h-24 animate-pulse rounded-[18px] bg-white/[0.04]" />
-          <div className="h-40 animate-pulse rounded-[18px] bg-white/[0.04]" />
+          <div className="h-24 animate-pulse rounded-lg bg-elevated" />
+          <div className="h-24 animate-pulse rounded-lg bg-elevated" />
+          <div className="h-40 animate-pulse rounded-lg bg-elevated" />
         </div>
       ) : isEmpty ? (
         <div className="mt-4">
@@ -39,49 +39,49 @@ function InsightPanel({ summary, insights, charts, isLoading, isEmpty }) {
         </div>
       ) : (
         <div className="mt-4 space-y-3">
-          <article className="panel-hover rounded-[18px] border border-risk/25 bg-risk/10 p-4">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-rose-100">Top risk segment</p>
+          <article className="rounded-lg border border-risk/25 bg-risk/10 p-4">
+            <p className="text-[11px] uppercase tracking-wide text-[#a2553f]">Top risk segment</p>
             <p className="mt-2 text-lg font-semibold text-textPrimary">{topRisk?.metric || "Segment not available"}</p>
             <p className="mt-2 text-sm leading-6 text-textSecondary">
               {topRisk?.detail || "Risk details will appear after churn data is loaded."}
             </p>
           </article>
 
-          <article className="panel-hover rounded-[18px] border border-secondary/20 bg-secondary/10 p-4">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-sky-100">Key churn driver</p>
+          <article className="rounded-lg border border-secondary/20 bg-secondary/10 p-4">
+            <p className="text-[11px] uppercase tracking-wide text-primary">Key churn driver</p>
             <p className="mt-2 text-lg font-semibold text-textPrimary">
               {keyDrivers?.contract || fallbackDriver?.segment || "Driver unavailable"}
             </p>
             <p className="mt-2 text-sm leading-6 text-textSecondary">
               {fallbackDriver
-                ? `${Number(fallbackDriver.churn_rate || 0).toFixed(1)}% churn across ${fallbackDriver.customer_count || 0} customers, with payment and tenure patterns reinforcing this segment.`
+                ? `${Number(fallbackDriver.churn_rate || 0).toFixed(1)}% churn across ${fallbackDriver.customer_count || 0} customers.`
                 : "Load data to surface the segment with the strongest churn pressure."}
             </p>
           </article>
 
-          <article className="panel-hover rounded-[18px] border border-primary/20 bg-primary/10 p-4">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-lime-100">Revenue at risk</p>
+          <article className="rounded-lg border border-primary/20 bg-primary/10 p-4">
+            <p className="text-[11px] uppercase tracking-wide text-textPrimary">Revenue at risk</p>
             <p className="mt-2 font-display text-[28px] text-textPrimary">{formatMetric(revenueAtRisk)}</p>
             <p className="mt-2 text-sm leading-6 text-textSecondary">
-              Current monthly exposure linked to customers already in the churned segment.
+              Monthly charges of the customers who left.
             </p>
           </article>
 
-          <article className="rounded-[18px] glass-border bg-[#0d1320] p-4">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-textSecondary">Analyst note stack</p>
+          <article className="rounded-lg glass-border bg-elevated p-4">
+            <p className="text-[11px] uppercase tracking-wide text-textSecondary">Key findings</p>
             <div className="mt-3 space-y-3">
               {analystNotes.length > 0 ? (
                 analystNotes.map((note) => (
-                  <div key={note?.title} className="rounded-2xl border border-line bg-white/[0.02] p-3">
+                  <div key={note?.title} className="rounded-md border border-line bg-elevated p-3">
                     <div className="flex items-center justify-between gap-3">
                       <p className="text-sm font-medium text-textPrimary">{note?.title}</p>
                       <span
                         className={`rounded-full px-2.5 py-1 text-[11px] ${
                           note?.severity === "critical" || note?.severity === "high"
-                            ? "bg-risk/15 text-rose-100"
+                            ? "bg-risk/20 text-[#a2553f]"
                             : note?.severity === "medium"
-                              ? "bg-warning/15 text-amber-50"
-                              : "bg-primary/15 text-lime-100"
+                              ? "bg-warning/15 text-[#8a6d2f]"
+                              : "bg-primary/15 text-textPrimary"
                         }`}
                       >
                         {note?.severity || "info"}
@@ -96,12 +96,12 @@ function InsightPanel({ summary, insights, charts, isLoading, isEmpty }) {
             </div>
           </article>
 
-          <article className="rounded-[18px] glass-border bg-[#0d1320] p-4">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-textSecondary">Automated recommendations</p>
+          <article className="rounded-lg glass-border bg-elevated p-4">
+            <p className="text-[11px] uppercase tracking-wide text-textSecondary">Recommendations</p>
             <div className="mt-3 space-y-3">
               {recommendations.length > 0 ? (
                 recommendations.map((recommendation) => (
-                  <div key={recommendation?.title} className="rounded-2xl border border-line bg-white/[0.02] p-3">
+                  <div key={recommendation?.title} className="rounded-md border border-line bg-elevated p-3">
                     <p className="text-sm font-medium text-textPrimary">{recommendation?.title}</p>
                     <p className="mt-2 text-sm leading-6 text-textSecondary">{recommendation?.body}</p>
                   </div>

@@ -325,30 +325,26 @@ function DashboardPage() {
   const freshnessLabel = metadata?.loaded_at ? formatDateTime(metadata.loaded_at) : "Awaiting dataset";
 
   return (
-    <main className="min-h-screen bg-app text-slate-100">
+    <main className="min-h-screen bg-app text-textPrimary">
       <div className="mx-auto max-w-[1440px] px-4 py-4 md:px-6 lg:px-8">
         <Header backendStatus={backendStatus} />
 
-        <section className="mt-4 rounded-[24px] glass-border bg-surface px-5 py-4 shadow-panel backdrop-blur md:px-6">
+        <section className="mt-4 rounded-lg glass-border bg-surface px-5 py-4 shadow-panel md:px-6">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div className="max-w-3xl">
-              <p className="text-[11px] uppercase tracking-[0.28em] text-primary">Operations overview</p>
-              <h1 className="mt-2 font-display text-2xl text-textPrimary md:text-[28px]">
-                Retention KPIs, churn drivers, and predictive risk in one operating view.
-              </h1>
+              <h2 className="font-display text-xl text-textPrimary md:text-2xl">Why customers leave and who is most at risk</h2>
               <p className="mt-2 text-sm text-textSecondary">
-                Track customer exposure, compare high-risk segments, and move from descriptive analysis to prediction
-                without leaving the workspace.
+                Explore churn by contract, tenure, services and payment method, then train a model to score each customer.
               </p>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2 xl:min-w-[360px]">
-              <div className="rounded-2xl border border-line bg-white/[0.03] px-4 py-3">
-                <p className="text-[11px] uppercase tracking-[0.24em] text-textSecondary">Dataset source</p>
+              <div className="rounded-md border border-line bg-elevated px-4 py-3">
+                <p className="text-[11px] uppercase tracking-wide text-textSecondary">Dataset source</p>
                 <p className="mt-2 truncate text-sm font-medium text-textPrimary">{sourceLabel}</p>
               </div>
-              <div className="rounded-2xl border border-line bg-white/[0.03] px-4 py-3">
-                <p className="text-[11px] uppercase tracking-[0.24em] text-textSecondary">Last refresh</p>
+              <div className="rounded-md border border-line bg-elevated px-4 py-3">
+                <p className="text-[11px] uppercase tracking-wide text-textSecondary">Last refresh</p>
                 <p className="mt-2 text-sm font-medium text-textPrimary">{freshnessLabel}</p>
               </div>
             </div>
@@ -470,10 +466,10 @@ function DashboardPage() {
               isTraining={loading.train}
               backendStatus={backendStatus}
             />
-            <section className="rounded-[22px] glass-border bg-surface p-4 shadow-panel backdrop-blur">
+            <section className="rounded-lg glass-border bg-surface p-4 shadow-panel">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-[11px] uppercase tracking-[0.26em] text-textSecondary">Data health</p>
+                  <p className="text-[11px] uppercase tracking-wide text-textSecondary">Data health</p>
                   <h3 className="mt-2 text-lg font-semibold text-textPrimary">Dataset quality</h3>
                 </div>
               </div>

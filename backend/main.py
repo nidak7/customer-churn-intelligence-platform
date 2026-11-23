@@ -28,15 +28,15 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Customer Churn Intelligence Platform API",
+    title="Customer Churn API",
     version="1.0.0",
-    description="Business intelligence and churn prediction API for Telco-style customer datasets.",
+    description="Churn analysis and prediction API for the Telco customer dataset.",
     lifespan=lifespan,
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -49,7 +49,7 @@ app.include_router(churn_router)
 @app.get("/")
 def root():
     return {
-        "message": "Customer Churn Intelligence Platform API is running.",
+        "message": "Customer Churn API is running.",
         "docs": "/docs",
     }
 
