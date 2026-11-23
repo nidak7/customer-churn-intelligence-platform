@@ -45,7 +45,7 @@ class ChurnService:
     def __init__(self):
         project_root = Path(__file__).resolve().parents[3]
         database_path = project_root / "backend" / "app" / "customer_churn.db"
-        self.sample_path = project_root / "data" / "telco_customer_churn.csv"
+        self.sample_path = Path(__file__).resolve().parents[5] / "data" / "telco_customer_churn.csv"
         self.repository = DatasetRepository(database_path)
         self.repository.initialize()
         self.model_bundle: dict | None = None

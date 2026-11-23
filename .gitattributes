@@ -1,0 +1,2 @@
+extras/web-app/** linguist-vendored
+*.ipynb linguist-detectable

@@ -11,3 +11,7 @@ customer-churn.db
 customer_churn.db
 run-logs/
 .env
+
+# Power BI local cache
+**/.pbi/
+*.pbix.bak

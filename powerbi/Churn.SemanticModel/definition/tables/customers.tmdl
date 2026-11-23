@@ -1,0 +1,140 @@
+table customers
+
+	measure 'Customers' = COUNTROWS(customers)
+		formatString: #,0
+
+	measure 'Churned' = CALCULATE([Customers], customers[ChurnFlag] = 1)
+		formatString: #,0
+
+	measure 'Churn Rate' = DIVIDE([Churned], [Customers])
+		formatString: 0.0%
+
+	measure 'Monthly Revenue' = SUM(customers[MonthlyCharges])
+		formatString: \$#,0
+
+	measure 'Revenue Lost' = CALCULATE([Monthly Revenue], customers[ChurnFlag] = 1)
+		formatString: \$#,0
+
+	measure 'Revenue Lost %' = DIVIDE([Revenue Lost], [Monthly Revenue])
+		formatString: 0.0%
+
+	measure 'Avg Tenure' = AVERAGE(customers[tenure])
+		formatString: 0.0
+
+	measure 'Test Churn Rate' = CALCULATE([Churn Rate], customers[IsTestCustomer] = 1)
+		formatString: 0.0%
+
+	measure 'High Risk Segment Churn' = CALCULATE([Churn Rate], customers[HighRiskSegment] = 1)
+		formatString: 0.0%
+
+	measure 'High Risk Segment Customers' = CALCULATE([Customers], customers[HighRiskSegment] = 1)
+		formatString: #,0
+
+	measure 'Annual Revenue Retained' = [Revenue Lost] * 12 * [Save Rate Value]
+		formatString: \$#,0
+
+	column customerID
+		dataType: string
+		summarizeBy: none
+		sourceColumn: customerID
+
+	column Contract
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Contract
+
+	column InternetService
+		dataType: string
+		summarizeBy: none
+		sourceColumn: InternetService
+
+	column PaymentMethod
+		dataType: string
+		summarizeBy: none
+		sourceColumn: PaymentMethod
+
+	column OnlineSecurity
+		dataType: string
+		summarizeBy: none
+		sourceColumn: OnlineSecurity
+
+	column TechSupport
+		dataType: string
+		summarizeBy: none
+		sourceColumn: TechSupport
+
+	column Churn
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Churn
+
+	column tenure
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: tenure
+
+	column MonthlyCharges
+		dataType: double
+		formatString: \$#,0.00
+		summarizeBy: none
+		sourceColumn: MonthlyCharges
+
+	column ChurnFlag
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: ChurnFlag
+
+	column TenureBand
+		dataType: string
+		sortByColumn: TenureBandOrder
+		summarizeBy: none
+		sourceColumn: TenureBand
+
+	column TenureBandOrder
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: TenureBandOrder
+
+	column RiskScore
+		dataType: double
+		formatString: 0.0%
+		summarizeBy: none
+		sourceColumn: RiskScore
+
+	column RiskBand
+		dataType: string
+		sortByColumn: RiskBandOrder
+		summarizeBy: none
+		sourceColumn: RiskBand
+
+	column RiskBandOrder
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: RiskBandOrder
+
+	column RiskDecile
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: RiskDecile
+
+	column IsTestCustomer
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: IsTestCustomer
+
+	column HighRiskSegment
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: HighRiskSegment
+
+	partition customers = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents(DataFile), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Selected = Table.SelectColumns(Promoted, {"customerID", "Contract", "InternetService", "PaymentMethod", "OnlineSecurity", "TechSupport", "Churn", "tenure", "MonthlyCharges", "ChurnFlag", "TenureBand", "TenureBandOrder", "RiskScore", "RiskBand", "RiskBandOrder", "RiskDecile", "IsTestCustomer", "HighRiskSegment"}),
+					Typed = Table.TransformColumnTypes(Selected, {{"customerID", type text}, {"Contract", type text}, {"InternetService", type text}, {"PaymentMethod", type text}, {"OnlineSecurity", type text}, {"TechSupport", type text}, {"Churn", type text}, {"tenure", Int64.Type}, {"MonthlyCharges", type number}, {"ChurnFlag", Int64.Type}, {"TenureBand", type text}, {"TenureBandOrder", Int64.Type}, {"RiskScore", type number}, {"RiskBand", type text}, {"RiskBandOrder", Int64.Type}, {"RiskDecile", Int64.Type}, {"IsTestCustomer", Int64.Type}, {"HighRiskSegment", Int64.Type}}, "en-US")
+				in
+					Typed

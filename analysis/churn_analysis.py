@@ -91,6 +91,8 @@ def score(df: pd.DataFrame) -> pd.DataFrame:
     out["IsTestCustomer"] = out.index.isin(x_test.index).astype(int)  # scores on training rows are optimistic
     out["RiskRank"] = out["RiskScore"].rank(ascending=False, method="first").astype(int)
     out["RiskDecile"] = pd.qcut(out["RiskRank"], 10, labels=range(1, 11)).astype(int)
+    out["RiskBandOrder"] = out["RiskBand"].map({"Low": 1, "Medium": 2, "High": 3}).astype(int)
+    out["TenureBandOrder"] = out["TenureBand"].cat.codes + 1
     out["HighRiskSegment"] = ((out.Contract == "Month-to-month") & (out.InternetService == "Fiber optic")
                               & (out.PaymentMethod == "Electronic check") & (out.tenure <= 12)).astype(int)
     test = out[out.IsTestCustomer == 1]
