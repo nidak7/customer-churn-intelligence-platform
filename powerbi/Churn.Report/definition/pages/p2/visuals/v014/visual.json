@@ -159,6 +159,19 @@
           }
         }
       ],
+      "categoryAxis": [
+        {
+          "properties": {
+            "axisType": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Categorical'"
+                }
+              }
+            }
+          }
+        }
+      ],
       "labels": [
         {
           "properties": {

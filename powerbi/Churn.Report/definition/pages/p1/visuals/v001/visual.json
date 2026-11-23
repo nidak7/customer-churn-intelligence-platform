@@ -133,6 +133,13 @@
                 }
               }
             },
+            "labelPrecision": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
             "fontSize": {
               "expr": {
                 "Literal": {

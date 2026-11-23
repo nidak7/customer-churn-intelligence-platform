@@ -10,7 +10,7 @@ Build the dashboard from `churn_customers_powerbi.csv` (7,043 rows, one per cust
 Check: the table has **7,043 rows**.
 
 ## 2. Sort the band columns
-Text sorts alphabetically, so bands come out in the wrong order. Add sort-by columns in **Modeling → New column**:
+Text sorts alphabetically, so bands come out in the wrong order. The dataset already includes `RiskBandOrder` and `TenureBandOrder`. If you build from scratch, you can also create them in **Modeling → New column**:
 
 ```DAX
 RiskBandOrder = SWITCH(customers[RiskBand], "Low", 1, "Medium", 2, "High", 3)
@@ -27,11 +27,12 @@ Monthly Revenue = SUM(customers[MonthlyCharges])
 Revenue Lost   = CALCULATE([Monthly Revenue], customers[ChurnFlag] = 1)
 Revenue Lost % = DIVIDE([Revenue Lost], [Monthly Revenue])
 Avg Tenure     = AVERAGE(customers[tenure])
-Annual Revenue Retained = [Revenue Lost] * 12 * 'Save Rate'[Save Rate Value]
+Retained at 5%  = [Revenue Lost] * 12 * 0.05
+Retained at 10% = [Revenue Lost] * 12 * 0.10
+Retained at 20% = [Revenue Lost] * 12 * 0.20
 ```
-Create the what-if input with **Modeling → New parameter → Numeric range** (0 to 0.5, step 0.01, default 0.10, name `Save Rate`).
 
-Checks: Customers **7,043** · Churn Rate **26.54%** · Revenue Lost **$139,131** · Revenue Lost % **30.5%** · Avg Tenure **32.4** · Annual Revenue Retained at 10% = **$166,957**.
+Checks: Customers **7,043** · Churn Rate **26.54%** · Revenue Lost **$139,131** · Revenue Lost % **30.5%** · Avg Tenure **32.4** · Retained at 10% = **$166,957**.
 
 Test-only measures (training rows have flattering scores, so validate the model on unseen customers only):
 ```DAX
@@ -58,10 +59,10 @@ Checks: High Risk Segment Churn **71.2%** (631 customers). With `RiskBand = High
 - Slicers: `Contract`, `InternetService`.
 
 ## 7. Page 3: Retention impact
-- The `Save Rate` slicer, a Card with `Annual Revenue Retained`, and a column chart of `Revenue Lost` by `Contract`.
+- Cards for `Retained at 5%`, `Retained at 10%`, `Retained at 20%` and `Revenue Lost %`, then column or bar charts of `Revenue Lost` by `Contract`, `TenureBand`, `InternetService` and `PaymentMethod`.
 
 ## 8. Finish
-Add page names, align visuals with **Format → Align**, turn on **View → Gridlines → Snap to grid**. Export a screenshot of each page to `powerbi/screenshots/` and save the file as `powerbi/churn_dashboard.pbix`.
+Add page names, align visuals with **Format → Align**, turn on **View → Gridlines → Snap to grid**. Save the file, and export a screenshot of each page for the README.
 
 ## Talking points for interviews
 - Churn is 26.5% and is concentrated: month-to-month contracts and the first 12 months.

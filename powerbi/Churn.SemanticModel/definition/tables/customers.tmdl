@@ -30,7 +30,13 @@ table customers
 	measure 'High Risk Segment Customers' = CALCULATE([Customers], customers[HighRiskSegment] = 1)
 		formatString: #,0
 
-	measure 'Annual Revenue Retained' = [Revenue Lost] * 12 * [Save Rate Value]
+	measure 'Retained at 5%' = [Revenue Lost] * 12 * 0.05
+		formatString: \$#,0
+
+	measure 'Retained at 10%' = [Revenue Lost] * 12 * 0.10
+		formatString: \$#,0
+
+	measure 'Retained at 20%' = [Revenue Lost] * 12 * 0.20
 		formatString: \$#,0
 
 	column customerID

@@ -18,7 +18,18 @@ An end-to-end analysis of 7,043 customers from the public IBM Telco Customer Chu
 | Who should be called first? | The riskiest 30% of customers (by model score) contain **66.4%** of all leavers |
 | What is it worth? | Saving 10% of churners keeps about **$167K a year** |
 
-<!-- DASHBOARD -->
+## Power BI dashboard
+
+Three pages built from the cleaned, scored dataset: an overview of churn drivers, a call list for the retention team, and the revenue at stake.
+
+![Overview](images/dashboard_overview.png)
+
+![Who to call first](images/dashboard_who_to_call_first.png)
+
+![Retention impact](images/dashboard_retention_impact.png)
+
+Built with Power Query, a single-table model, 13 DAX measures (churn rate, revenue lost, segment churn, retained revenue at 5/10/20% save rates) and a custom colour theme. The call list and risk-band charts use only customers the model had never seen. See [`powerbi/`](powerbi/).
+
 
 ## Analysis
 
@@ -66,7 +77,7 @@ Test each action on a small group first. These results show association, not pro
 |---|---|
 | [`notebooks/churn_analysis.ipynb`](notebooks/churn_analysis.ipynb) | Full analysis: cleaning, EDA, statistical tests, model, risk bands, revenue impact |
 | [`sql/churn_analysis_queries.sql`](sql/churn_analysis_queries.sql) | 10 queries (GROUP BY, CASE, CTE, window function) with expected results |
-| [`powerbi/`](powerbi/) | Power BI project, scored dataset, theme and build guide |
+| [`powerbi/`](powerbi/) | Power BI project (`.pbip`), scored dataset, theme and build guide |
 | [`analysis/churn_analysis.py`](analysis/churn_analysis.py) | Script version of the analysis; also writes the Power BI dataset |
 | [`data/`](data/) | Source data |
 | [`extras/web-app/`](extras/web-app/) | Optional interactive version (FastAPI + React) |

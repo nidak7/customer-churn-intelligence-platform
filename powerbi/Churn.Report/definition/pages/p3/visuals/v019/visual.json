@@ -23,11 +23,11 @@
                       "Entity": "customers"
                     }
                   },
-                  "Property": "Revenue Lost"
+                  "Property": "Retained at 20%"
                 }
               },
-              "queryRef": "customers.Revenue Lost",
-              "nativeQueryRef": "Revenue Lost"
+              "queryRef": "customers.Retained at 20%",
+              "nativeQueryRef": "Retained at 20%"
             }
           ]
         }
@@ -47,7 +47,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Monthly revenue lost to churn'"
+                  "Value": "'Kept per year at a 20% save rate'"
                 }
               }
             },
@@ -127,6 +127,13 @@
         {
           "properties": {
             "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1000D"
+                }
+              }
+            },
+            "labelPrecision": {
               "expr": {
                 "Literal": {
                   "Value": "1D"

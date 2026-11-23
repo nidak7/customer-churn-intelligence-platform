@@ -10,25 +10,24 @@
     "tabOrder": 0
   },
   "visual": {
-    "visualType": "slicer",
+    "visualType": "card",
     "query": {
       "queryState": {
         "Values": {
           "projections": [
             {
               "field": {
-                "Column": {
+                "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Save Rate"
+                      "Entity": "customers"
                     }
                   },
-                  "Property": "Save Rate"
+                  "Property": "Retained at 5%"
                 }
               },
-              "queryRef": "Save Rate.Save Rate",
-              "nativeQueryRef": "Save Rate",
-              "active": true
+              "queryRef": "customers.Retained at 5%",
+              "nativeQueryRef": "Retained at 5%"
             }
           ]
         }
@@ -48,7 +47,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Save rate (share of churners we keep)'"
+                  "Value": "'Kept per year at a 5% save rate'"
                 }
               }
             },
@@ -124,13 +123,51 @@
     },
     "drillFilterOtherVisuals": true,
     "objects": {
-      "data": [
+      "labels": [
         {
           "properties": {
-            "mode": {
+            "labelDisplayUnits": {
               "expr": {
                 "Literal": {
-                  "Value": "'Dropdown'"
+                  "Value": "1000D"
+                }
+              }
+            },
+            "labelPrecision": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "28D"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#3F566E'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "categoryLabels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }

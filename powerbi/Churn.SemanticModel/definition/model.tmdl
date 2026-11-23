@@ -4,5 +4,4 @@ model Model
 	discourageImplicitMeasures
 
 ref table customers
-ref table 'Save Rate'
 ref expression DataFile

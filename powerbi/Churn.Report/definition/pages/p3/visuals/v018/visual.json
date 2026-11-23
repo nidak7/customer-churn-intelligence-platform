@@ -23,11 +23,11 @@
                       "Entity": "customers"
                     }
                   },
-                  "Property": "Annual Revenue Retained"
+                  "Property": "Retained at 10%"
                 }
               },
-              "queryRef": "customers.Annual Revenue Retained",
-              "nativeQueryRef": "Annual Revenue Retained"
+              "queryRef": "customers.Retained at 10%",
+              "nativeQueryRef": "Retained at 10%"
             }
           ]
         }
@@ -47,7 +47,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Revenue retained per year'"
+                  "Value": "'Kept per year at a 10% save rate'"
                 }
               }
             },
@@ -127,6 +127,13 @@
         {
           "properties": {
             "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1000D"
+                }
+              }
+            },
+            "labelPrecision": {
               "expr": {
                 "Literal": {
                   "Value": "1D"

@@ -4,7 +4,7 @@ Three report pages built on `churn_customers_powerbi.csv` (7,043 customers with 
 
 1. **Overview**: customers, churn rate, revenue lost, churn by contract, tenure, internet service and payment method
 2. **Who to call first**: highest-risk segment, model risk bands, risk deciles, call list
-3. **Retention impact**: revenue lost and a save-rate what-if
+3. **Retention impact**: revenue lost by segment and revenue kept at 5%, 10% and 20% save rates
 
 ## Open the project
 
