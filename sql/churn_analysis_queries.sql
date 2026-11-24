@@ -1,6 +1,6 @@
 -- Customer churn analysis queries (SQLite syntax; works in PostgreSQL with minor changes)
--- Table: customers  (load data/telco_customer_churn.csv; TotalCharges blanks set to 0)
--- Expected results are shown in the comments.
+-- Table: customers (load data/telco_customer_churn.csv; TotalCharges blanks set to 0)
+-- The results I expect are in the comments.
 
 -- 1. Overall churn rate and revenue share
 -- Expect: 7043 customers, 1869 churned, 26.54%, churners hold 30.5% of monthly revenue
@@ -41,7 +41,7 @@ FROM customers
 WHERE Contract = 'Month-to-month' AND InternetService = 'Fiber optic'
   AND PaymentMethod = 'Electronic check' AND tenure <= 12;
 
--- 6. Protective add-on services
+-- 6. Add-on services that go with lower churn
 -- Expect: roughly 15% churn with online security / tech support vs 42% without
 SELECT 'Online security' AS service, OnlineSecurity AS has_service, COUNT(*) AS customers,
        ROUND(100.0 * SUM(Churn='Yes') / COUNT(*), 2) AS churn_rate_pct
@@ -50,19 +50,19 @@ UNION ALL
 SELECT 'Tech support', TechSupport, COUNT(*), ROUND(100.0 * SUM(Churn='Yes') / COUNT(*), 2)
 FROM customers WHERE InternetService <> 'No' GROUP BY TechSupport;
 
--- 7. Monthly revenue lost to churn, by contract (window function for share of total)
+-- 7. Monthly revenue lost to churn by contract (window function for share of total)
 SELECT Contract,
        ROUND(SUM(CASE WHEN Churn='Yes' THEN MonthlyCharges END), 0) AS revenue_lost,
        ROUND(100.0 * SUM(CASE WHEN Churn='Yes' THEN MonthlyCharges END)
              / SUM(SUM(CASE WHEN Churn='Yes' THEN MonthlyCharges END)) OVER (), 1) AS share_of_lost_pct
 FROM customers GROUP BY Contract ORDER BY revenue_lost DESC;
 
--- 8. Customer lifetime value of leavers vs stayers
+-- 8. Lifetime value of leavers vs stayers
 SELECT Churn, COUNT(*) AS customers, ROUND(AVG(tenure), 1) AS avg_tenure_months,
        ROUND(AVG(MonthlyCharges), 2) AS avg_monthly, ROUND(AVG(TotalCharges), 0) AS avg_lifetime_value
 FROM customers GROUP BY Churn;
 
--- 9. CTE: contract + tenure heatmap, flagging cells above the overall churn rate
+-- 9. CTE: contract and tenure heatmap, flagging cells above the overall churn rate
 WITH base AS (SELECT 100.0 * SUM(Churn='Yes') / COUNT(*) AS overall FROM customers),
 cells AS (
   SELECT Contract,
@@ -74,7 +74,7 @@ SELECT Contract, tenure_band, customers, ROUND(churn_rate, 1) AS churn_rate_pct,
        CASE WHEN churn_rate > overall THEN 'Above average' ELSE 'Below average' END AS flag
 FROM cells, base ORDER BY churn_rate DESC;
 
--- 10. Risk bands from the model (requires powerbi/churn_customers_powerbi.csv loaded as scored_customers)
+-- 10. Risk bands from the model (load powerbi/churn_customers_powerbi.csv as scored_customers)
 -- Expect on test customers: Low 761 / 4.47%, Medium 393 / 24.94%, High 607 / 55.19%
 SELECT RiskBand, COUNT(*) AS customers,
        ROUND(100.0 * SUM(ChurnFlag) / COUNT(*), 2) AS actual_churn_pct

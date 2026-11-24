@@ -1,14 +1,14 @@
 """
-Customer churn analysis: reproduces the key figures and builds the Power BI dataset.
+Customer churn analysis. Reproduces the main numbers and builds the Power BI dataset.
 
 Run from the repository root:
     python analysis/churn_analysis.py
 
 What it does
-1. Cleans the Telco data (11 blank TotalCharges -> 0, new customers not yet billed).
-2. Prints the headline churn findings and chi-square tests.
-3. Trains the same Logistic Regression used by the web app (75/25 split, seed 42).
-4. Writes powerbi/churn_customers_powerbi.csv with risk scores and bands for every customer.
+1. Cleans the Telco data (11 blank TotalCharges become 0, they are new customers not yet billed).
+2. Prints the main churn numbers and chi-square tests.
+3. Trains the same Logistic Regression the web app uses (75/25 split, seed 42).
+4. Writes powerbi/churn_customers_powerbi.csv with a risk score and band for every customer.
 """
 from pathlib import Path
 
@@ -33,7 +33,7 @@ def load_clean() -> pd.DataFrame:
     df = pd.read_csv(DATA)
     df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce")
     blanks = int(df["TotalCharges"].isna().sum())
-    df["TotalCharges"] = df["TotalCharges"].fillna(0)  # all blanks are tenure-0 customers
+    df["TotalCharges"] = df["TotalCharges"].fillna(0)  # all the blanks are tenure-0 customers
     assert df["customerID"].is_unique
     print(f"Rows: {len(df):,} | blank TotalCharges fixed: {blanks}")
     df["ChurnFlag"] = (df["Churn"] == "Yes").astype(int)
@@ -88,7 +88,7 @@ def score(df: pd.DataFrame) -> pd.DataFrame:
     out["RiskScore"] = pipe.predict_proba(df[features])[:, 1].round(4)
     out["RiskBand"] = pd.cut(out["RiskScore"], [-0.01, MEDIUM_RISK - 1e-9, HIGH_RISK - 1e-9, 1.0],
                              labels=["Low", "Medium", "High"])
-    out["IsTestCustomer"] = out.index.isin(x_test.index).astype(int)  # scores on training rows are optimistic
+    out["IsTestCustomer"] = out.index.isin(x_test.index).astype(int)  # scores on training rows look better than they should
     out["RiskRank"] = out["RiskScore"].rank(ascending=False, method="first").astype(int)
     out["RiskDecile"] = pd.qcut(out["RiskRank"], 10, labels=range(1, 11)).astype(int)
     out["RiskBandOrder"] = out["RiskBand"].map({"Low": 1, "Medium": 2, "High": 3}).astype(int)
