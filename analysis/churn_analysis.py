@@ -36,6 +36,9 @@ def load_clean() -> pd.DataFrame:
     df["TotalCharges"] = df["TotalCharges"].fillna(0)  # all the blanks are tenure-0 customers
     assert df["customerID"].is_unique
     print(f"Rows: {len(df):,} | blank TotalCharges fixed: {blanks}")
+    # quick checks so I notice if the data file changes
+    assert len(df) == 7043, "expected 7,043 customers"
+    assert blanks == 11, "expected 11 blank TotalCharges"
     df["ChurnFlag"] = (df["Churn"] == "Yes").astype(int)
     df["TenureBand"] = pd.cut(df["tenure"], [-1, 12, 24, 48, 72],
                               labels=["0-12 months", "13-24 months", "25-48 months", "49-72 months"])

@@ -1,4 +1,6 @@
--- Customer churn analysis queries (SQLite syntax; works in PostgreSQL with minor changes)
+-- Customer churn analysis queries (SQLite syntax)
+-- For PostgreSQL: write SUM(Churn = 'Yes') as SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END),
+-- and cast to numeric before ROUND, e.g. ROUND((100.0 * x)::numeric, 2).
 -- Table: customers (load data/telco_customer_churn.csv; TotalCharges blanks set to 0)
 -- The results I expect are in the comments.
 
@@ -80,3 +82,26 @@ SELECT RiskBand, COUNT(*) AS customers,
        ROUND(100.0 * SUM(ChurnFlag) / COUNT(*), 2) AS actual_churn_pct
 FROM scored_customers WHERE IsTestCustomer = 1
 GROUP BY RiskBand ORDER BY CASE RiskBand WHEN 'Low' THEN 1 WHEN 'Medium' THEN 2 ELSE 3 END;
+
+-- 11. Churn by risk decile for test customers (NTILE)
+-- Expect: decile 1 74.6%, decile 2 59.1%, decile 3 42.0% ... decile 10 0.6%
+WITH ranked AS (
+    SELECT ChurnFlag, NTILE(10) OVER (ORDER BY RiskScore DESC) AS decile
+    FROM scored_customers WHERE IsTestCustomer = 1)
+SELECT decile, COUNT(*) AS customers, ROUND(100.0 * AVG(ChurnFlag), 1) AS churn_pct
+FROM ranked GROUP BY decile ORDER BY decile;
+
+-- 12. If the team calls the riskiest customers first, how many leavers do they reach? (running total)
+-- Expect: calling 10% reaches 28.1% of leavers, 30% reaches 66.4%, 50% reaches 88.0%
+WITH ranked AS (
+    SELECT ChurnFlag,
+           ROW_NUMBER() OVER (ORDER BY RiskScore DESC, customerID) AS rn,
+           COUNT(*) OVER () AS n,
+           SUM(ChurnFlag) OVER () AS total_leavers
+    FROM scored_customers WHERE IsTestCustomer = 1),
+running AS (
+    SELECT rn, n, total_leavers, SUM(ChurnFlag) OVER (ORDER BY rn) AS leavers_found
+    FROM ranked)
+SELECT rn AS customers_called, ROUND(100.0 * rn / n, 1) AS pct_called,
+       ROUND(100.0 * leavers_found / total_leavers, 1) AS pct_of_leavers_found
+FROM running WHERE rn IN (CAST(n * 0.1 AS INT), CAST(n * 0.3 AS INT), CAST(n * 0.5 AS INT));

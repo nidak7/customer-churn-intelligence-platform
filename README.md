@@ -2,6 +2,15 @@
 
 I looked at 7,043 customers from the public IBM Telco Customer Churn dataset to see who is leaving, why, and who a retention team should call first. I used SQL, Python and Power BI.
 
+I wrote it with a retention team lead in mind, someone who needs a short list of customers to call each week and a rough idea of what that's worth.
+
+This dataset is used a lot, so here's what I added on top of the usual churn analysis:
+
+- I checked whether fibre customers churn more only because of their contracts. They don't.
+- I scored customers with the model but only used customers it had never seen for the risk bands, so the numbers aren't flattered.
+- I compared logistic regression with two other models before picking it.
+- I put a rough revenue number on keeping some of the customers who leave.
+
 ## What I found
 
 - 1,869 of 7,043 customers left (26.5%), about 1 in 4. They paid $139,131 a month, which is 30.5% of all monthly revenue.
@@ -39,7 +48,7 @@ Fibre isn't only down to contract type either. Fibre customers churn more than D
 
 ## The model
 
-I trained a Logistic Regression on 75% of customers and tested it on the other 1,761. I cared most about recall, because missing someone who is about to leave costs more than one extra phone call.
+I trained a Logistic Regression on 75% of customers and tested it on the other 1,761. I focused on recall because I figured a wasted call is cheaper than losing a customer. With real call costs I'd want to check that.
 
 | Measure | Result |
 |---|---|
@@ -56,23 +65,26 @@ I used the score to split customers into risk bands. Among the unseen customers,
 
 A fancier model didn't help. With 5-fold cross-validation, Logistic Regression scored an AUC of 0.845, Random Forest 0.844 and Gradient Boosting 0.847. I kept the simple one because I can explain it to a business team.
 
-The cut-off decides who gets a call. At 0.3 the model catches 93% of leavers but you'd call 57% of customers. At 0.6 you call 34% but miss more.
+The cut-off decides who gets a call. At 0.3 the model catches 93% of leavers but you'd call 57% of customers. At 0.6 you call 34% but miss more. I used 0.30 and 0.60 for the bands and didn't try to tune them.
 
 ## What I'd do next
 
-Check in with new customers at 30, 90 and 180 days. Offer longer contracts to month-to-month customers, starting with the High-risk group. Move electronic-check payers to automatic payment, bundle online security and tech support for fibre customers, and look at fibre pricing and quality. Re-score customers every month.
+These are ideas from the data, I haven't tested any of them. Check in with new customers at 30, 90 and 180 days. Offer longer contracts to month-to-month customers, starting with the High-risk group. Move electronic-check payers to automatic payment, bundle online security and tech support for fibre customers, and look at fibre pricing and quality. Re-score customers every month.
 
-## Things to keep in mind
+## Limits
 
-This is public data for a made-up company, and it's a single snapshot. The data shows what goes together with churn, not what causes it, so I'd test any idea on a small group first. The $167K figure is revenue, not profit. It ignores campaign cost and assumes saved customers stay a full year. I didn't tune the models much, though all three scored about the same.
+- It's public data for a made-up company, and it's one snapshot in time.
+- It shows what goes together with churn, not what causes it.
+- The $167K is revenue, not profit, and ignores what a campaign costs.
+- I didn't tune the models much, though all three scored about the same.
 
 ## What's in this repository
 
 - [`notebooks/churn_analysis.ipynb`](notebooks/churn_analysis.ipynb) has the full analysis with charts.
-- [`sql/churn_analysis_queries.sql`](sql/churn_analysis_queries.sql) has 10 SQL queries (grouping, CASE, CTE, window function) with the results I expect.
+- [`sql/churn_analysis_queries.sql`](sql/churn_analysis_queries.sql) has 12 SQL queries (grouping, CASE, CTEs, window functions like NTILE and a running total) with the results I expect.
 - [`powerbi/`](powerbi/) has the Power BI project, the scored dataset, the colour theme and build notes.
 - [`analysis/churn_analysis.py`](analysis/churn_analysis.py) is a script that reproduces the main numbers and writes the Power BI dataset.
-- [`data/`](data/) has the source data (IBM Telco Customer Churn, 7,043 customers, 21 columns).
+- [`data/`](data/) has the source data (IBM Telco Customer Churn, 7,043 customers, 21 columns) and a short [column guide](data/README.md).
 - [`extras/web-app/`](extras/web-app/) is a small interactive version I built as an extra, with FastAPI and React.
 
 To run it:
